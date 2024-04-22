@@ -1,0 +1,150 @@
+﻿@page "/"
+@using Syncfusion.Blazor.RichTextEditor
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Navigations
+@using RichTextEditorMailMerge.Model
+@using Newtonsoft.Json
+@using Scriban
+
+<SfRichTextEditor ID="mailMerge" @ref="rteObj" @bind-Value="TextEditorValue">
+    <RichTextEditorToolbarSettings Items="@Tools" Type="ToolbarType.MultiRow">
+        <RichTextEditorCustomToolbarItems>
+            <RichTextEditorCustomToolbarItem Name="InsertMergeField">
+                <Template>
+                    <SfMenu TValue="MenuItem">
+                        <MenuEvents TValue="MenuItem" ItemSelected="ItemSelected"></MenuEvents>
+                        <MenuItems>
+                            <MenuItem Text="Insert Merge Field">
+                                <MenuItems>
+                                    <MenuItem Text="invoice.company_details">
+                                        <MenuItems>
+                                            <MenuItem Text="invoice.company_details.name"></MenuItem>
+                                            <MenuItem Text="invoice.company_details.address"></MenuItem>
+                                            <MenuItem Text="invoice.company_details.phone"></MenuItem>
+                                        </MenuItems>
+                                    </MenuItem>
+                                    <MenuItem Text="invoice.customer_details">
+                                        <MenuItems>
+                                            <MenuItem Text="invoice.customer_details.name"></MenuItem>
+                                            <MenuItem Text="invoice.customer_details.address"></MenuItem>
+                                            <MenuItem Text="invoice.customer_details.email"></MenuItem>
+                                        </MenuItems>
+                                    </MenuItem>
+                                    <MenuItem Text="invoice.invoice_number"></MenuItem>
+                                </MenuItems>
+                            </MenuItem>
+                        </MenuItems>
+                    </SfMenu>
+
+                </Template>
+            </RichTextEditorCustomToolbarItem>
+            <RichTextEditorCustomToolbarItem Name="FinishMerge">
+                <Template>
+                    <button class="e-btn e-tbar-btn" @onclick="ClickHandler">
+                        <span style="font-size:14px">Finish & Merge</span>
+                    </button>
+                </Template>
+            </RichTextEditorCustomToolbarItem>
+        </RichTextEditorCustomToolbarItems>
+    </RichTextEditorToolbarSettings>
+
+</SfRichTextEditor>
+
+<SfMention TItem="PersonData" MentionChar="@mentionChar" Target="#mailMerge_rte-editable" DataSource="@EmailData" SuggestionCount=8 AllowSpaces="true" PopupHeight="200px" PopupWidth="250px">
+
+    <DisplayTemplate>
+        {{@((context as PersonData).Name)}};
+    </DisplayTemplate>
+    <ChildContent>
+        <MentionFieldSettings Text="Name"></MentionFieldSettings>
+    </ChildContent>
+</SfMention>
+
+
+@code {
+    SfRichTextEditor? rteObj;
+    public bool TextBoxEditingSlidingPanelOpened { get; set; } = true;
+    public string TextEditorValue { get; set; } = @"<p>Dear {{invoice.company_details.name}},</p>
+
+                <p>Thank you for your email and for the exclusive offer! I appreciate the gesture and look forward to using the discount on my next purchase.</p>
+
+                <p>I've been a satisfied customer of {{invoice.company_details.name}} for 5 years, and I must say, your products/services have always exceeded my expectations. Keep up the excellent work!</p>
+
+                <p>If I have any questions or need further assistance, I'll be sure to reach out to your customer service team.</p>
+
+                <p>
+                    Thanks again and best regards,<br>
+                    {{invoice.customer_details.name}} <br />
+                    {{invoice.customer_details.address}} <br />
+                    {{invoice.customer_details.email}}
+                </p>";
+
+    public char mentionChar = '{';
+    public class PersonData
+    {
+        public string? Name { get; set; }
+
+        public string? Status { get; set; }
+    }
+    List<PersonData> EmailData = new List<PersonData> {
+    new PersonData() { Name="invoice.company_details.name",  Status = "active",  },
+    new PersonData() { Name="invoice.company_details.address",  Status = "away" },
+    new PersonData() { Name="invoice.company_details.phone", Status = "busy" },
+    new PersonData() { Name="invoice.customer_details.name", Status = "active"},
+    new PersonData() { Name="invoice.customer_details.address", Status = "busy" },
+    new PersonData() { Name="invoice.customer_details.email", Status = "active" },
+    new PersonData() { Name="invoice.issue_date", Status = "away"},
+    new PersonData() { Name="invoice.due_date", Status = "busy" }
+  };
+
+    private List<ToolbarItemModel> Tools = new List<ToolbarItemModel>()
+    {
+        new ToolbarItemModel() { Command = ToolbarCommand.Bold },
+        new ToolbarItemModel() { Command = ToolbarCommand.Italic },
+        new ToolbarItemModel() { Command = ToolbarCommand.Underline },
+        new ToolbarItemModel() { Command = ToolbarCommand.StrikeThrough },
+        new ToolbarItemModel() { Command = ToolbarCommand.SuperScript },
+        new ToolbarItemModel() { Command = ToolbarCommand.SubScript },
+        new ToolbarItemModel() { Command = ToolbarCommand.Separator },
+        new ToolbarItemModel() { Command = ToolbarCommand.FontName },
+        new ToolbarItemModel() { Command = ToolbarCommand.FontSize },
+        new ToolbarItemModel() { Command = ToolbarCommand.FontColor },
+        new ToolbarItemModel() { Command = ToolbarCommand.BackgroundColor },
+        new ToolbarItemModel() { Command = ToolbarCommand.Separator },
+        new ToolbarItemModel() { Command = ToolbarCommand.LowerCase },
+        new ToolbarItemModel() { Command = ToolbarCommand.UpperCase },
+        new ToolbarItemModel() { Command = ToolbarCommand.Separator },
+        new ToolbarItemModel() { Command = ToolbarCommand.Image },
+        new ToolbarItemModel() { Command = ToolbarCommand.CreateLink },
+        new ToolbarItemModel() { Command = ToolbarCommand.CreateTable },
+        new ToolbarItemModel() { Command = ToolbarCommand.Separator },
+        new ToolbarItemModel() { Command = ToolbarCommand.Formats },
+        new ToolbarItemModel() { Command = ToolbarCommand.Alignments },
+        new ToolbarItemModel() { Command = ToolbarCommand.Separator },
+        new ToolbarItemModel() { Command = ToolbarCommand.NumberFormatList },
+        new ToolbarItemModel() { Command = ToolbarCommand.BulletFormatList },
+        new ToolbarItemModel() { Command = ToolbarCommand.SourceCode },
+        new ToolbarItemModel() { Name = "InsertMergeField", TooltipText = "Insert Merge Field" },
+        new ToolbarItemModel() { Name = "FinishMerge", TooltipText = "Finish & Merge" },
+        new ToolbarItemModel() { Command = ToolbarCommand.Undo },
+        new ToolbarItemModel() { Command = ToolbarCommand.Redo }
+    };
+
+    public void ClickHandler()
+    {
+        Invoice ? invoice = JsonConvert.DeserializeObject<Invoice>(File.ReadAllText(".\\Data\\InvoiceData.json"));
+        string invoiceHTML = TextEditorValue;
+        Template template = Template.Parse(invoiceHTML);
+        var templateData = new { invoice };
+        //Fill template with real invoice data
+        TextEditorValue = template.Render(templateData);
+    }
+
+    public async Task ItemSelected(MenuEventArgs<MenuItem> args)
+    {
+        if (args.Item.Items == null)
+        {
+            await this.rteObj.ExecuteCommandAsync(CommandName.InsertHTML, "<span  contenteditable='false' class='e-mention-chip'>{{" + args.Item.Text + "}}</span>", new ExecuteCommandOption() { Undo = true });
+        }
+    }
+}

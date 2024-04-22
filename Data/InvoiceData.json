@@ -1,0 +1,16 @@
+{
+  "InvoiceNumber": "INVOICE 3-4-8",
+  "IssueDate": "08/09/2022",
+  "DueDate": "20/10/2022",
+  "CompanyDetails": {
+    "Name": "Sample software solutions",
+    "Address": "455 Foggy Heights, AZ 85004, US",
+    "Phone": "(602) 519-0450",
+    "Email": "company@example.com"
+  },
+  "CustomerDetails": {
+    "Name": "John Doe",
+    "Address": "796 Silver Harbour, TX 79273, US",
+    "Email": "john@example.com"
+  }
+}
