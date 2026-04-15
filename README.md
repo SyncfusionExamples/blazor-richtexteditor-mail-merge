@@ -48,4 +48,9 @@ dotnet run
 
 ## Support
 
-Open an issue in the repository for questions or issues.
+This sample is provided for demonstration purposes. For issues, open an issue in the repository.
+
+## See also
+
+- [Online examples](https://blazor.syncfusion.com/demos/rich-text-editor/overview?theme=fluent2)
+- [Documentation](https://blazor.syncfusion.com/documentation/rich-text-editor/getting-started-webapp)
